@@ -6,7 +6,7 @@
         <tr> 
           <ColorBox color="red" daStyle="background-color: red" />
           <ColorBox color="green" daStyle="background-color: green" />
-          <ColorBox color="blue" daStyle="bachkground-color: blue" />
+          <ColorBox color="blue" daStyle="background-color: blue" />
         </tr>
       </tbody>
     </table> 
