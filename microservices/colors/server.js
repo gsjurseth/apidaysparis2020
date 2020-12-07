@@ -33,9 +33,9 @@ app.get('/colors', cors(), (req, res) => {
     });
 
     let percentages = {
-      "red": clrs.red/doc.length,
-      "blue": clrs.blue/doc.length,
-      "green": clrs.green/doc.length
+      "red": (clrs.red/doc.length).toFixed(3).toString(),
+      "blue": (clrs.blue/doc.length).toFixed(3).toString(),
+      "green": (clrs.green/doc.length).toFixed(3).toString()
     }
     return res.json(percentages);
   })
