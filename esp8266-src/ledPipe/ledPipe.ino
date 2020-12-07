@@ -27,14 +27,18 @@ ESP8266WiFiMulti WiFiMulti;
 WiFiClient client;
 HTTPClient http;
 
-
-int brightness = 30;
-
 struct Colors {
   int red;
   int blue;
   int green;
 };
+
+int brightness = 30;
+int run = 0;
+Colors prevclrs;
+Colors myclrs;
+
+
 
 void showStrip() {
   #ifdef ADAFRUIT_NEOPIXEL_H
@@ -95,15 +99,18 @@ void setColor(int start, int length, char color[]) {
     Serial.print("setting blue for: ");
     Serial.println(color);
     for (int i = start; i < (start+length); i++) {
-      Serial.print("Setting LED ");
-      Serial.print(i);
-      Serial.print(" to ");
-      Serial.println(color);
       leds[i] = CRGB::Blue; FastLED.show();
     }
     FastLED.show();
     
   }
+}
+
+void setWhite(int start, int length) {
+  for (int i = start; i < (start+length); i++) {
+    leds[i] = CRGB::White; FastLED.show();
+  }
+  FastLED.show();
 }
 
 void CylonBounce(byte red, byte green, byte blue, int EyeSize, int SpeedDelay, int ReturnDelay){
@@ -157,6 +164,7 @@ void setup() {
   WiFi.mode(WIFI_STA);
   WiFiMulti.addAP(ESSID, WPA);
 
+  setWhite(0, 60);
 }
 
 Colors fetchColors() {
@@ -175,7 +183,7 @@ Colors fetchColors() {
     DynamicJsonDocument doc(2048);
 
     // httpCode will be negative on error
-    if (httpCode > 0) {
+    if (httpCode == 200) {
       // HTTP header has been send and Server response header has been handled
       Serial.printf("[HTTP] GET... code: %d\n", httpCode);
 
@@ -213,18 +221,38 @@ Colors fetchColors() {
 }
 
 void loop() {
-
-  CylonBounce(0xff, 0, 0, 4, 10, 50);
   // wait for WiFi connection
   if ((WiFiMulti.run() == WL_CONNECTED)) {
-    Colors myclrs = fetchColors();
+    
+    if (run = 1) {
+      prevclrs.red = myclrs.red;
+      prevclrs.blue = myclrs.blue;
+      prevclrs.green = myclrs.green;
+    }
 
-    int i = 0;
-    setColor(i, myclrs.red, "red");
-    i = i + myclrs.red;
-    setColor(i, myclrs.green, "green");
-    i = i + myclrs.green;
-    setColor(i, myclrs.blue, "blue");
+    myclrs = fetchColors();
+    if (( myclrs.red == prevclrs.red) && (myclrs.blue == prevclrs.blue) && (myclrs.green == prevclrs.green)) {
+      Serial.println("Looks like there's been no change");  
+    }
+    else {
+      CylonBounce(0xff, 0, 0, 4, 10, 50);    
+    }
+
+
+
+    if (myclrs.red > 61) {
+      setWhite(0,60);
+    }
+    else {
+      int i = 0;
+      setColor(i, myclrs.red, "red");
+      i = i + myclrs.red;
+      setColor(i, myclrs.green, "green");
+      i = i + myclrs.green;
+      setColor(i, myclrs.blue, "blue");
+    }
+    
+    run = 1;
   }
-  delay(10000);
+  delay(3000);
 }

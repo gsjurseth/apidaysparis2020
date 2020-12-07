@@ -58,6 +58,19 @@ app.post('/colors', cors(), (req, res) => {
    });
 });
 
+app.delete('/colors', cors(), (req, res) => {
+  console.log("Looks like we're wiping out our results")
+  colors.remove()
+   .then(doc => {
+     //console.log(doc)
+     return res.json({ "msg": "we are clean" });
+   })
+   .catch(err => {
+     console.error(err)
+     return res.status(500).send(err);
+   });
+});
+
 app.listen(port, () =>
   console.log(`Example app listening on port ${port}!`),
 );

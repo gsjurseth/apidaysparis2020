@@ -22,7 +22,7 @@
 
         axios({
           method: 'post',
-          url: `http://emea-poc15-test.apigee.net/v1/appcolors/${color}`,
+          url: `https://emea-poc15-test.apigee.net/v1/appcolors/${color}`,
           headers: {
             "apikey": "g7Ijk9u6y8dA4f57SggbqL8daKNdmAi5"
           }
