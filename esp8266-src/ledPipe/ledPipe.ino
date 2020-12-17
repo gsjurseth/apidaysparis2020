@@ -33,7 +33,7 @@ struct Colors {
   int green;
 };
 
-int brightness = 30;
+int brightness = 10;
 int run = 0;
 Colors prevclrs;
 Colors myclrs;
